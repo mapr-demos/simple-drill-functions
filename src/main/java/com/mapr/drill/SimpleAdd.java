@@ -10,7 +10,12 @@ import org.apache.drill.exec.expr.holders.Float8Holder;
 import org.apache.drill.exec.expr.holders.IntHolder;
 
 /**
- * Created by tdunning on 5/30/15.
+ * This is the UDF example from http://drill.apache.org/docs/adding-custom-functions-to-drill/
+ * modified slightly to use floating point inputs.
+ *
+ * The idea here is that thus function can be called from a query like this:
+ *
+ * select myaddints(position_id, 3) from cp.`employee.json` limit 3;
  */
 public class SimpleAdd {
     @FunctionTemplate(name = "myaddints", scope = FunctionScope.SIMPLE, nulls = NullHandling.NULL_IF_NULL)

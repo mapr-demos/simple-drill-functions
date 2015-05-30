@@ -27,7 +27,13 @@ Edit the `drill-override.conf` file to add a reference to the package these func
 
 Now run drill and test the results
 
-    cd apache-drill-1.0.0/
-    bin/drill-embedded
-    
-
+    $ cd apache-drill-1.0.0/
+    $ bin/drill-embedded
+    0: jdbc:drill:zk=local> select myaddints(position_id, 3) from cp.`employee.json` limit 3;
+    +---------+
+    | EXPR$0  |
+    +---------+
+    | 4.0     |
+    | 5.0     |
+    | 5.0     |
+    +---------+
