@@ -37,3 +37,55 @@ Now run drill and test the results
     | 5.0     |
     | 5.0     |
     +---------+
+## Sample UDF's provide
+### zip(...)
+Zip approximately replicates the python zip function, but only for pairs of lists containing numbers. 
+
+If you have data like this:
+
+    {n:1, t:[1,2,3], x:[3,2,1], y:[4,5,6]}
+    {n:2, t:[0,1,2,3], x:[0,3,2,1], y:[7,6,5,4]}
+   
+Then a query like this
+
+     select n, data[0] as t, data[1] as v 
+     from (
+        select n, flatten( zip(t,x)) as data 
+        from dfs.root.`/Users/tdunning/tmp/data.json`);
+   
+Will produce these results
+
+    +------+------+------+
+    |  n   |  t   |  v   |
+    +------+------+------+
+    | 1.0  | 1.0  | 3.0  |
+    | 1.0  | 2.0  | 2.0  |
+    | 1.0  | 3.0  | 1.0  |
+    | 2.0  | 1.0  | 3.0  |
+    | 2.0  | 2.0  | 2.0  |
+    | 2.0  | 3.0  | 1.0  |
+    | 2.0  | 0.0  | 0.0  |
+    +------+------+------+
+   
+Two, three or four arguments can be used. Thus,
+
+     select n, data[0] as t, data[1] as x, data[2] as y 
+     from (
+         select n, flatten( zip(t,x,y)) as data 
+         from dfs.root.`/Users/tdunning/tmp/data.json`);
+   
+will produce
+
+    +------+------+------+------+
+    |  n   |  t   |  x   |  y   |
+    +------+------+------+------+
+    | 1.0  | 1.0  | 3.0  | 4.0  |
+    | 1.0  | 2.0  | 2.0  | 5.0  |
+    | 1.0  | 3.0  | 1.0  | 6.0  |
+    | 2.0  | 1.0  | 3.0  | 4.0  |
+    | 2.0  | 2.0  | 2.0  | 5.0  |
+    | 2.0  | 3.0  | 1.0  | 6.0  |
+    | 2.0  | 0.0  | 0.0  | 7.0  |
+    +------+------+------+------+
+
+Aside from any utility this function itself might have, zip demonstrates how to construct complex output structures.
