@@ -11,6 +11,49 @@ import org.apache.drill.exec.vector.complex.writer.BaseWriter;
 
 /**
  * Replicates the python zip function, but only for pairs of lists containing numbers.
+ *
+ * If you have data like this:
+ * <pre>
+ * {n:1, t:[1,2,3], x:[3,2,1], y:[4,5,6]}
+ * {n:2, t:[0,1,2,3], x:[0,3,2,1], y:[7,6,5,4]}
+ * </pre>
+ * Then a query like this
+ * <pre>
+ *   select n, data[0] as t, data[1] as v from (select n, flatten( zip(t,x)) as data from dfs.root.`/Users/tdunning/tmp/data.json`);
+ * </pre>
+ * Will produce these results
+ * <pre>
+ * +------+------+------+
+ * |  n   |  t   |  v   |
+ * +------+------+------+
+ * | 1.0  | 1.0  | 3.0  |
+ * | 1.0  | 2.0  | 2.0  |
+ * | 1.0  | 3.0  | 1.0  |
+ * | 2.0  | 1.0  | 3.0  |
+ * | 2.0  | 2.0  | 2.0  |
+ * | 2.0  | 3.0  | 1.0  |
+ * | 2.0  | 0.0  | 0.0  |
+ * +------+------+------+
+ * </pre>
+ * Two, three or four arguments can be used.  Thus,
+ *
+ * <pre>
+ *   select n, data[0] as t, data[1] as x, data[2] as y from (select n, flatten( zip(t,x,y)) as data from dfs.root.`/Users/tdunning/tmp/data.json`);
+ * </pre>
+ * will produce
+ * <pre>
+ * +------+------+------+------+
+ * |  n   |  t   |  x   |  y   |
+ * +------+------+------+------+
+ * | 1.0  | 1.0  | 3.0  | 4.0  |
+ * | 1.0  | 2.0  | 2.0  | 5.0  |
+ * | 1.0  | 3.0  | 1.0  | 6.0  |
+ * | 2.0  | 1.0  | 3.0  | 4.0  |
+ * | 2.0  | 2.0  | 2.0  | 5.0  |
+ * | 2.0  | 3.0  | 1.0  | 6.0  |
+ * | 2.0  | 0.0  | 0.0  | 7.0  |
+ * +------+------+------+------+
+ * </pre>
  */
 @SuppressWarnings("unused")
 public class Zip {
