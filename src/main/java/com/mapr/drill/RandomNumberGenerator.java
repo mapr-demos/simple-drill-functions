@@ -7,11 +7,15 @@ import org.apache.drill.exec.expr.annotations.Param;
 import org.apache.drill.exec.expr.holders.Float8Holder;
 
 /**
- * Created by tdunning on 7/20/15.
+ * A collection of random number samplers.
  */
 public class RandomNumberGenerator {
-    @FunctionTemplate(name = "random", scope = FunctionTemplate.FunctionScope.SIMPLE, nulls = FunctionTemplate.NullHandling.NULL_IF_NULL)
-    public static class IntZip2 implements DrillSimpleFunc {
+    /**
+     * Samples from a uniform random distribution.  Arguments include the min (inclusive) and max (exclusive) of the
+     * resulting distribution.
+     */
+    @FunctionTemplate(isRandom = true, name = "random", scope = FunctionTemplate.FunctionScope.SIMPLE, nulls = FunctionTemplate.NullHandling.NULL_IF_NULL)
+    public static class Uniform implements DrillSimpleFunc {
         @Param
         Float8Holder low;
         @Param
@@ -24,7 +28,25 @@ public class RandomNumberGenerator {
         }
 
         public void eval() {
-            output.value = com.mapr.drill.RandomHelper.nextUniform(low, high);
+            output.value = com.mapr.drill.RandomHelper.nextUniform(low.value, high.value);
+        }
+    }
+
+    @FunctionTemplate(name = "rnorm", scope = FunctionTemplate.FunctionScope.SIMPLE, nulls = FunctionTemplate.NullHandling.NULL_IF_NULL)
+    public static class Normal implements DrillSimpleFunc {
+        @Param
+        Float8Holder mean;
+        @Param
+        Float8Holder std;
+
+        @Output
+        Float8Holder output;
+
+        public void setup() {
+        }
+
+        public void eval() {
+            output.value = com.mapr.drill.RandomHelper.nextNormal(mean.value, std.value);
         }
     }
 }
