@@ -93,3 +93,15 @@ will produce
     +------+------+------+------+
 
 Aside from any utility this function itself might have, zip demonstrates how to construct complex output structures.
+
+### mask(...)
+Mask will replace the n first characters by a masking character as you can see below:
+
+    SELECT MASK(first_name, '*', 3) first , MASK(last_name, '#', 10) last FROM cp.`employee.json` LIMIT 2;
+    +----------+----------+
+    |  first   |   last   |
+    +----------+----------+
+    | ***ri    | ######   |
+    | ***rick  | #######  |
+    +----------+----------+
+
