@@ -31,18 +31,18 @@ public class ZipWriter {
 
         writer.setValueCount(n);
         BaseWriter.ListWriter outer = writer.rootAsList();
-        outer.start(); // [ outer list
+        outer.startList(); // [ outer list
 
         for (int i = 0; i < n; i++) {
             BaseWriter.ListWriter inner = outer.list();
-            inner.start();
+            inner.startList();
             for (IntVector.Accessor accessor : v) {
                 inner.integer().writeInt(accessor.get(i));
             }
-            inner.end();   // ] inner list
+            inner.endList();   // ] inner list
         }
 
-        outer.end(); // ] outer list
+        outer.endList(); // ] outer list
     }
 
     public void writeFloat8(BaseWriter.ComplexWriter writer, RepeatedFloat8Holder... in) {
@@ -64,17 +64,17 @@ public class ZipWriter {
 
         writer.setValueCount(n);
         BaseWriter.ListWriter outer = writer.rootAsList();
-        outer.start(); // [ outer list
+        outer.startList(); // [ outer list
 
         for (int i = 0; i < n; i++) {
             BaseWriter.ListWriter inner = outer.list();
-            inner.start();
+            inner.startList();
             for (Float8Vector.Accessor accessor : v) {
                 inner.float8().writeFloat8(accessor.get(i));
             }
-            inner.end();   // ] inner list
+            inner.endList();   // ] inner list
         }
 
-        outer.end(); // ] outer list
+        outer.endList(); // ] outer list
     }
 }
